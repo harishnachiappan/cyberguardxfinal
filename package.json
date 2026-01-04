@@ -1,0 +1,32 @@
+{
+  "name": "cyberguardx",
+  "version": "1.0.0",
+  "description": "Comprehensive cybersecurity platform for vulnerability assessment and penetration testing",
+  "main": "index.js",
+  "scripts": {
+    "install-all": "cd CyberGuardX/backend && npm install && cd ../frontend && npm install",
+    "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
+    "start:backend": "cd CyberGuardX/backend && npm run ai-only",
+    "start:frontend": "cd CyberGuardX/frontend && npm start",
+    "start:full": "cd CyberGuardX/backend && npm start",
+    "build": "cd CyberGuardX/frontend && npm run build",
+    "test": "cd CyberGuardX/backend && npm test && cd ../frontend && npm test"
+  },
+  "keywords": [
+    "cybersecurity",
+    "vulnerability-scanner",
+    "owasp",
+    "penetration-testing",
+    "ai-powered",
+    "web-security"
+  ],
+  "author": "Harish Nachiappan & Thirumalai",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^7.6.0"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  }
+}

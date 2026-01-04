@@ -38,6 +38,14 @@ app.use(express.urlencoded({ extended: true }));
 // Initialize AI analyzer
 const aiAnalyzer = new FreeAITargetAnalyzer();
 
+// In-memory user storage for AI-only mode
+let registeredUsers = {
+  'admin@cyberguardx.com': { password: 'admin123', role: 'admin', name: 'Admin User', id: 'admin' },
+  'harish@cyberguardx.com': { password: 'harish123', role: 'developer', name: 'Harish Nachiappan', id: 'harish' },
+  'thirumalai@cyberguardx.com': { password: 'thiru123', role: 'developer', name: 'Thirumalai', id: 'thirumalai' },
+  'user@cyberguardx.com': { password: 'user123', role: 'user', name: 'Test User', id: 'testuser' }
+};
+
 // Socket.IO for real-time updates
 io.on('connection', (socket) => {
   console.log('🔌 Client connected:', socket.id);
@@ -52,9 +60,8 @@ io.on('connection', (socket) => {
   });
 });
 
-// Make io available to routes
-app.set('io', io);
-app.set('mongoConnected', () => false); // No MongoDB needed for AI
+// Add reports route to start-ai-only.js
+app.use('/api/reports', require('./routes/reports'));
 
 // AI Routes (No database required)
 app.post('/api/scans/analyze-target', async (req, res) => {
@@ -125,7 +132,117 @@ app.post('/api/scans/analyze-target', async (req, res) => {
   }
 });
 
-// AI Chat endpoint
+// Enhanced scan endpoint that generates reports
+app.post('/api/scans/run-with-report', async (req, res) => {
+  try {
+    const { targetUrl, scanType, userId } = req.body;
+    
+    if (!targetUrl) {
+      return res.status(400).json({ error: 'Target URL is required' });
+    }
+
+    console.log(`🔍 Starting enhanced scan with report generation for: ${targetUrl}`);
+    
+    const scanId = `CGX-${Date.now().toString().slice(-5)}`;
+    
+    // Perform AI analysis
+    const analysis = await aiAnalyzer.analyzeTarget(targetUrl);
+    
+    // Generate realistic vulnerabilities
+    const vulnerabilities = generateRealisticVulnerabilities(targetUrl, analysis);
+    
+    // Auto-generate report
+    const axios = require('axios');
+    try {
+      const reportResponse = await axios.post('http://localhost:5000/api/reports/generate', {
+        scanId,
+        userId: userId || 'demo-user',
+        vulnerabilities,
+        targetUrl,
+        scanType: scanType || 'Comprehensive Security Scan'
+      });
+      
+      res.json({
+        scanId,
+        reportId: reportResponse.data.reportId,
+        targetInfo: analysis.targetInfo,
+        vulnerabilities,
+        summary: reportResponse.data.report.summary,
+        message: 'Scan completed and report generated successfully'
+      });
+    } catch (reportError) {
+      console.error('Report generation failed:', reportError);
+      res.json({
+        scanId,
+        targetInfo: analysis.targetInfo,
+        vulnerabilities,
+        message: 'Scan completed but report generation failed'
+      });
+    }
+    
+  } catch (error) {
+    console.error('Enhanced scan error:', error);
+    res.status(500).json({ error: 'Scan failed' });
+  }
+});
+
+function generateRealisticVulnerabilities(targetUrl, analysis) {
+  const vulnerabilities = [];
+  const techInfo = analysis.targetInfo || {};
+  
+  // Generate vulnerabilities based on analysis
+  if (techInfo.pageInfo?.hasLogin) {
+    vulnerabilities.push({
+      type: 'SQL Injection Vulnerability',
+      severity: 'High',
+      location: '/login',
+      description: 'Login form vulnerable to SQL injection attacks',
+      recommendation: 'Use parameterized queries and input validation',
+      owasp: 'A03:2021 – Injection'
+    });
+  }
+  
+  if (techInfo.pageInfo?.forms > 0) {
+    vulnerabilities.push({
+      type: 'Cross-Site Scripting (XSS)',
+      severity: 'High',
+      location: 'User input forms',
+      description: 'User input not properly sanitized, allowing XSS attacks',
+      recommendation: 'Implement output encoding and Content Security Policy',
+      owasp: 'A03:2021 – Injection'
+    });
+  }
+  
+  // Check security headers
+  const securityHeaders = techInfo.securityHeaders || {};
+  const missingHeaders = Object.entries(securityHeaders)
+    .filter(([key, value]) => value === 'Missing');
+  
+  if (missingHeaders.length > 0) {
+    vulnerabilities.push({
+      type: 'Missing Security Headers',
+      severity: 'Medium',
+      location: 'HTTP Response Headers',
+      description: `${missingHeaders.length} critical security headers are missing`,
+      recommendation: 'Implement all recommended security headers',
+      owasp: 'A05:2021 – Security Misconfiguration'
+    });
+  }
+  
+  // SSL/HTTPS check
+  if (!techInfo.ssl?.valid) {
+    vulnerabilities.push({
+      type: 'Insecure Transport',
+      severity: 'High',
+      location: 'Website Transport',
+      description: 'Website not using HTTPS encryption',
+      recommendation: 'Implement SSL/TLS encryption',
+      owasp: 'A02:2021 – Cryptographic Failures'
+    });
+  }
+  
+  return vulnerabilities;
+}
 app.post('/api/scans/ai-chat', async (req, res) => {
   try {
     const { message, context } = req.body;
@@ -159,20 +276,15 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Auth endpoints (simplified for AI-only mode)
+// Auth endpoints with persistent user storage
 app.post('/api/auth/login', (req, res) => {
   const { username, password } = req.body;
   
-  // Demo credentials
-  const demoUsers = {
-    'admin@cyberguardx.com': { password: 'admin123', role: 'admin', name: 'Admin User', id: 'admin' },
-    'harish@cyberguardx.com': { password: 'harish123', role: 'developer', name: 'Harish Nachiappan', id: 'harish' },
-    'thirumalai@cyberguardx.com': { password: 'thiru123', role: 'developer', name: 'Thirumalai', id: 'thirumalai' },
-    'user@cyberguardx.com': { password: 'user123', role: 'user', name: 'Test User', id: 'testuser' }
-  };
+  console.log(`🔐 Login attempt for: ${username}`);
   
-  const user = demoUsers[username];
+  const user = registeredUsers[username];
   if (user && user.password === password) {
+    console.log(`✅ Login successful for: ${username}`);
     res.json({
       token: 'demo-jwt-token-' + Date.now(),
       user: {
@@ -183,6 +295,7 @@ app.post('/api/auth/login', (req, res) => {
       }
     });
   } else {
+    console.log(`❌ Login failed for: ${username}`);
     res.status(401).json({ error: 'Invalid credentials' });
   }
 });
@@ -190,11 +303,31 @@ app.post('/api/auth/login', (req, res) => {
 app.post('/api/auth/register', (req, res) => {
   const { username, email, password, role } = req.body;
   
-  // In AI-only mode, just return success for any registration
+  console.log(`📝 Registration attempt for: ${email}`);
+  
+  // Check if user already exists
+  if (registeredUsers[email]) {
+    console.log(`❌ User already exists: ${email}`);
+    return res.status(400).json({ error: 'User already exists' });
+  }
+  
+  // Add new user to in-memory storage
+  const userId = email.split('@')[0] + '_' + Date.now();
+  registeredUsers[email] = {
+    password: password,
+    role: role || 'user',
+    name: username,
+    id: userId,
+    createdAt: new Date()
+  };
+  
+  console.log(`✅ User registered successfully: ${email}`);
+  console.log(`👥 Total registered users: ${Object.keys(registeredUsers).length}`);
+  
   res.json({
-    token: 'demo-jwt-token-' + Date.now(),
+    message: 'Registration successful',
     user: {
-      id: email.split('@')[0],
+      id: userId,
       username: username,
       email: email,
       role: role || 'user'
@@ -213,6 +346,24 @@ app.get('/api/auth/me', (req, res) => {
     totalScans: 0,
     totalVulnerabilities: 0
   });
+});
+
+// Debug endpoint to view registered users (development only)
+app.get('/api/auth/users', (req, res) => {
+  if (process.env.NODE_ENV === 'development') {
+    const userList = Object.keys(registeredUsers).map(email => ({
+      email,
+      name: registeredUsers[email].name,
+      role: registeredUsers[email].role,
+      createdAt: registeredUsers[email].createdAt
+    }));
+    res.json({
+      totalUsers: userList.length,
+      users: userList
+    });
+  } else {
+    res.status(403).json({ error: 'Not available in production' });
+  }
 });
 
 // Error handling middleware

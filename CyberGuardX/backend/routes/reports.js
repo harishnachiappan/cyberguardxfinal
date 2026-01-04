@@ -1,38 +1,43 @@
 const express = require('express');
-const Report = require('../models/Report');
-const Scan = require('../models/Scan');
+const PDFReportGenerator = require('../utils/pdfGenerator');
+const path = require('path');
+const fs = require('fs');
 
 const router = express.Router();
+const pdfGenerator = new PDFReportGenerator();
 
-// Generate report from scan
+// In-memory storage for AI-only mode
+let reportsStorage = new Map();
+let scanResults = new Map();
+
+// Generate report from scan (AI-only mode)
 router.post('/generate', async (req, res) => {
   try {
-    const { scanId, userId } = req.body;
+    const { scanId, userId, vulnerabilities, targetUrl, scanType } = req.body;
     
-    const scan = await Scan.findOne({ scanId });
-    if (!scan) {
-      return res.status(404).json({ error: 'Scan not found' });
-    }
-
     const reportId = `RPT-${Date.now().toString().slice(-5)}`;
     
-    const report = new Report({
+    const reportData = {
       reportId,
       scanId,
       userId,
-      targetUrl: scan.targetUrl,
-      scanType: scan.scanType,
-      vulnerabilities: scan.vulnerabilities || [],
-      summary: generateReportSummary(scan.vulnerabilities || []),
-      createdAt: new Date()
-    });
+      targetUrl: targetUrl || 'Unknown Target',
+      scanType: scanType || 'Security Scan',
+      vulnerabilities: vulnerabilities || [],
+      summary: generateReportSummary(vulnerabilities || []),
+      createdAt: new Date(),
+      status: 'Completed'
+    };
 
-    await report.save();
+    // Store in memory
+    reportsStorage.set(reportId, reportData);
+    
+    console.log(`📄 Report generated: ${reportId} for ${targetUrl}`);
 
     res.json({
       reportId,
       message: 'Report generated successfully',
-      report
+      report: reportData
     });
   } catch (error) {
     console.error('Report generation error:', error);
@@ -40,11 +45,11 @@ router.post('/generate', async (req, res) => {
   }
 });
 
-// Get report by ID
+// Get report by ID (AI-only mode)
 router.get('/:reportId', async (req, res) => {
   try {
     const { reportId } = req.params;
-    const report = await Report.findOne({ reportId });
+    const report = reportsStorage.get(reportId);
     
     if (!report) {
       return res.status(404).json({ error: 'Report not found' });
@@ -57,33 +62,36 @@ router.get('/:reportId', async (req, res) => {
   }
 });
 
-// Get all reports for user
+// Get all reports for user (AI-only mode)
 router.get('/user/:userId', async (req, res) => {
   try {
     const { userId } = req.params;
-    const reports = await Report.find({ userId }).sort({ createdAt: -1 });
-    res.json(reports);
+    const userReports = Array.from(reportsStorage.values())
+      .filter(report => report.userId === userId)
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    
+    res.json(userReports);
   } catch (error) {
     console.error('Get user reports error:', error);
     res.status(500).json({ error: 'Failed to get reports' });
   }
 });
 
-// Get dashboard statistics
+// Get dashboard statistics (AI-only mode)
 router.get('/stats/:userId', async (req, res) => {
   try {
     const { userId } = req.params;
     
-    const scans = await Scan.find({ userId });
-    const reports = await Report.find({ userId });
+    const userReports = Array.from(reportsStorage.values())
+      .filter(report => report.userId === userId);
     
     let totalVulnerabilities = 0;
     let severityCounts = { critical: 0, high: 0, medium: 0, low: 0 };
     
-    scans.forEach(scan => {
-      if (scan.vulnerabilities) {
-        totalVulnerabilities += scan.vulnerabilities.length;
-        scan.vulnerabilities.forEach(vuln => {
+    userReports.forEach(report => {
+      if (report.vulnerabilities) {
+        totalVulnerabilities += report.vulnerabilities.length;
+        report.vulnerabilities.forEach(vuln => {
           const severity = vuln.severity.toLowerCase();
           if (severityCounts[severity] !== undefined) {
             severityCounts[severity]++;
@@ -93,19 +101,19 @@ router.get('/stats/:userId', async (req, res) => {
     });
 
     const stats = {
-      totalScans: scans.length,
-      totalReports: reports.length,
+      totalScans: userReports.length,
+      totalReports: userReports.length,
       totalVulnerabilities,
       criticalCount: severityCounts.critical,
       highCount: severityCounts.high,
       mediumCount: severityCounts.medium,
       lowCount: severityCounts.low,
-      recentScans: scans.slice(0, 6).map(scan => ({
-        id: scan.scanId,
-        target: scan.targetUrl,
-        status: scan.status,
-        vulnerabilities: scan.vulnerabilities ? scan.vulnerabilities.length : 0,
-        date: formatRelativeTime(scan.createdAt)
+      recentScans: userReports.slice(0, 6).map(report => ({
+        id: report.reportId,
+        target: report.targetUrl,
+        status: report.status,
+        vulnerabilities: report.vulnerabilities ? report.vulnerabilities.length : 0,
+        date: formatRelativeTime(report.createdAt)
       }))
     };
 
@@ -116,34 +124,30 @@ router.get('/stats/:userId', async (req, res) => {
   }
 });
 
-// Export report (PDF simulation)
-router.get('/:reportId/export', async (req, res) => {
+// Download PDF report
+router.get('/:reportId/download', async (req, res) => {
   try {
     const { reportId } = req.params;
-    const report = await Report.findOne({ reportId });
+    const report = reportsStorage.get(reportId);
     
     if (!report) {
       return res.status(404).json({ error: 'Report not found' });
     }
 
-    // Simulate PDF generation
-    const pdfData = {
-      reportId: report.reportId,
-      targetUrl: report.targetUrl,
-      scanType: report.scanType,
-      generatedAt: new Date(),
-      vulnerabilities: report.vulnerabilities,
-      summary: report.summary
-    };
-
-    res.json({
-      message: 'Report exported successfully',
-      downloadUrl: `/api/reports/${reportId}/download`,
-      pdfData
-    });
+    console.log(`📥 Generating PDF for report: ${reportId}`);
+    
+    // Generate PDF
+    const pdfBuffer = await pdfGenerator.generateReport(report);
+    
+    // Set headers for PDF download
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="CyberGuardX-Report-${reportId}.pdf"`);
+    res.setHeader('Content-Length', pdfBuffer.length);
+    
+    res.send(pdfBuffer);
   } catch (error) {
-    console.error('Export report error:', error);
-    res.status(500).json({ error: 'Failed to export report' });
+    console.error('PDF download error:', error);
+    res.status(500).json({ error: 'Failed to generate PDF report' });
   }
 });
 
