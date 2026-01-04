@@ -1,0 +1,381 @@
+.zap-form {
+display: flex;
+flex-direction: column;
+gap: 10px;
+margin-bottom: 12px;
+}
+
+.zap-field {
+display: flex;
+flex-direction: column;
+gap: 4px;
+font-size: 13px;
+}
+
+.theme-dark .zap-field span {
+color: #e5e7eb;
+}
+
+.theme-light .zap-field span {
+color: #111827;
+}
+
+.zap-field input {
+border-radius: 10px;
+border: 1px solid #4b5563;
+background-color: #020617;
+color: #e5e7eb;
+padding: 9px 11px;
+font-size: 14px;
+}
+
+.theme-light .zap-field input {
+background-color: #f9fafb;
+color: #020617;
+border-color: #d1d5db;
+}
+
+.zap-field input::placeholder {
+color: #6b7280;
+}
+
+.zap-radio-group {
+display: flex;
+flex-wrap: wrap;
+gap: 10px;
+margin-top: 4px;
+}
+
+.zap-radio-group label {
+display: flex;
+align-items: center;
+gap: 6px;
+font-size: 13px;
+color: #9ca3af;
+}
+
+.theme-light .zap-radio-group label {
+color: #4b5563;
+}
+
+.zap-note {
+font-size: 12px;
+margin-top: 4px;
+color: #9ca3af;
+}
+
+.theme-light .zap-note {
+color: #6b7280;
+}
+
+.zap-actions {
+margin-top: 4px;
+}
+
+.zap-scan-btn {
+border: none;
+border-radius: 10px;
+padding: 9px 14px;
+background-color: #22c55e;
+color: #020617;
+font-weight: 600;
+font-size: 14px;
+cursor: pointer;
+}
+
+.zap-scan-btn:disabled {
+opacity: 0.7;
+cursor: default;
+}
+
+/* Result */
+
+.zap-result {
+margin-top: 12px;
+border-radius: 12px;
+border: 1px solid #1f2937;
+padding: 10px 12px 12px;
+background-color: #020617;
+}
+
+.theme-light .zap-result {
+background-color: #f9fafb;
+border-color: #e5e7eb;
+}
+
+/* Progress */
+
+.zap-progress {
+margin-bottom: 10px;
+}
+
+.zap-progress-line {
+display: flex;
+align-items: center;
+gap: 8px;
+font-size: 12px;
+margin-bottom: 6px;
+}
+
+.zap-progress-bar {
+flex: 1;
+height: 6px;
+border-radius: 999px;
+background-color: #0f172a;
+overflow: hidden;
+}
+
+.theme-light .zap-progress-bar {
+background-color: #e5e7eb;
+}
+
+.zap-progress-fill {
+height: 100%;
+width: 0;
+border-radius: 999px;
+background-color: #22c55e;
+transition: width 0.3s ease;
+}
+
+.zap-progress-active {
+background-color: #f97316;
+}
+
+.zap-progress-percent {
+width: 40px;
+text-align: right;
+}
+
+/* Summary */
+
+.zap-summary {
+display: flex;
+justify-content: space-between;
+gap: 14px;
+margin-bottom: 12px;
+flex-wrap: wrap;
+}
+
+.zap-summary-left {
+flex: 1.2;
+min-width: 220px;
+}
+
+.zap-summary-right {
+display: flex;
+flex-wrap: wrap;
+gap: 8px;
+min-width: 220px;
+justify-content: flex-end;
+}
+
+.zap-risk-title {
+font-size: 13px;
+color: #9ca3af;
+margin-bottom: 4px;
+}
+
+.theme-light .zap-risk-title {
+color: #6b7280;
+}
+
+.zap-risk-badge {
+display: inline-block;
+padding: 4px 10px;
+border-radius: 999px;
+font-size: 13px;
+font-weight: 600;
+}
+
+.zap-risk-high {
+background-color: #fee2e2;
+color: #b91c1c;
+}
+
+.zap-risk-medium {
+background-color: #ffedd5;
+color: #c2410c;
+}
+
+.zap-risk-low {
+background-color: #dcfce7;
+color: #15803d;
+}
+
+.zap-owasp-line {
+margin-top: 8px;
+font-size: 12px;
+}
+
+.zap-owasp-label {
+color: #9ca3af;
+}
+
+.theme-light .zap-owasp-label {
+color: #6b7280;
+}
+
+.zap-owasp-tags {
+margin-top: 4px;
+display: flex;
+flex-wrap: wrap;
+gap: 6px;
+}
+
+.zap-owasp-tag {
+padding: 3px 8px;
+border-radius: 999px;
+border: 1px solid #4b5563;
+font-size: 11px;
+}
+
+.theme-light .zap-owasp-tag {
+border-color: #d1d5db;
+}
+
+/* Counts */
+
+.zap-count {
+min-width: 80px;
+padding: 6px 8px;
+border-radius: 10px;
+text-align: center;
+font-size: 12px;
+background-color: #020617;
+border: 1px solid #1f2937;
+}
+
+.theme-light .zap-count {
+background-color: #ffffff;
+border-color: #e5e7eb;
+}
+
+.zap-count-label {
+display: block;
+margin-bottom: 2px;
+}
+
+.zap-count-value {
+font-weight: 700;
+}
+
+.zap-count-high .zap-count-value {
+color: #f97373;
+}
+
+.zap-count-medium .zap-count-value {
+color: #fb923c;
+}
+
+.zap-count-low .zap-count-value {
+color: #4ade80;
+}
+
+.zap-count-info .zap-count-value {
+color: #60a5fa;
+}
+
+/* Issues table */
+
+.zap-issues {
+margin-top: 6px;
+}
+
+.zap-issues-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 6px;
+}
+
+.zap-issues-header h3 {
+font-size: 14px;
+}
+
+.zap-table {
+width: 100%;
+border-collapse: collapse;
+font-size: 12px;
+}
+
+.zap-table thead tr {
+background-color: rgba(15, 23, 42, 0.9);
+}
+
+.theme-light .zap-table thead tr {
+background-color: #e5e7eb;
+}
+
+.zap-table th,
+.zap-table td {
+padding: 6px 8px;
+border-bottom: 1px solid #1f2937;
+text-align: left;
+}
+
+.theme-light .zap-table th,
+.theme-light .zap-table td {
+border-bottom-color: #e5e7eb;
+}
+
+.zap-table th {
+color: #9ca3af;
+}
+
+.theme-light .zap-table th {
+color: #4b5563;
+}
+
+.zap-table tr:nth-child(even) {
+background-color: rgba(15, 23, 42, 0.5);
+}
+
+.theme-light .zap-table tr:nth-child(even) {
+background-color: #f3f4f6;
+}
+
+/* risk text colors */
+
+.zap-risk-cell {
+font-weight: 600;
+}
+
+.zap-risk-high-text {
+color: #f97373;
+}
+
+.zap-risk-medium-text {
+color: #fb923c;
+}
+
+.zap-risk-low-text {
+color: #4ade80;
+}
+
+.zap-owasp-cell {
+font-size: 11px;
+}
+
+/* PDF button */
+
+.zap-download-btn {
+border: none;
+border-radius: 8px;
+padding: 8px 14px;
+background-color: #3b82f6;
+color: #eef2ff;
+font-size: 13px;
+font-weight: 600;
+cursor: pointer;
+transition:
+background-color 0.2s ease,
+transform 0.15s ease,
+box-shadow 0.15s ease;
+}
+
+.zap-download-btn:hover {
+background-color: #2563eb;
+transform: translateY(-1px) scale(1.02);
+box-shadow: 0 10px 24px rgba(37, 99, 235, 0.4);
+}
+

@@ -1,0 +1,67 @@
+.dash-root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* background and base text depend on theme on <body> */
+.theme-dark .dash-root {
+  background-color: #020617;
+  color: #e5e7eb;
+}
+
+.theme-light .dash-root {
+  background-color: #f3f4f6;
+  color: #020617;
+}
+
+.dash-body {
+  display: flex;
+  flex: 1;
+}
+
+.dash-main {
+  flex: 1;
+  padding: 16px 20px;
+}
+
+.dash-title {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.dash-sub {
+  font-size: 14px;
+}
+
+/* text color per theme */
+.theme-dark .dash-sub {
+  color: #9ca3af;
+}
+
+.theme-light .dash-sub {
+  color: #4b5563;
+}
+
+/* smooth hover / scale for common elements */
+.stat-card,
+.chart-box,
+.sidebar-item,
+.primary-btn,
+.nav-icon-btn {
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.stat-card:hover,
+.chart-box:hover,
+.sidebar-item:hover,
+.primary-btn:hover,
+.nav-icon-btn:hover {
+  transform: translateY(-1px) scale(1.01);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}

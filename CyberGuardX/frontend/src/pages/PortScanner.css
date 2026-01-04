@@ -1,0 +1,355 @@
+.port-form {
+display: flex;
+flex-direction: column;
+gap: 10px;
+margin-bottom: 12px;
+}
+
+.port-field {
+display: flex;
+flex-direction: column;
+gap: 4px;
+font-size: 13px;
+}
+
+.theme-dark .port-field span {
+color: #e5e7eb;
+}
+
+.theme-light .port-field span {
+color: #111827;
+}
+
+.port-field input {
+border-radius: 10px;
+border: 1px solid #4b5563;
+background-color: #020617;
+color: #e5e7eb;
+padding: 9px 11px;
+font-size: 14px;
+}
+
+.theme-light .port-field input,
+.theme-light .port-range-input {
+background-color: #f9fafb;
+color: #020617;
+border-color: #d1d5db;
+}
+
+.port-field input::placeholder,
+.port-range-input::placeholder {
+color: #6b7280;
+}
+
+.port-radio-group {
+display: flex;
+flex-wrap: wrap;
+gap: 10px;
+margin-top: 4px;
+}
+
+.port-radio-group label {
+display: flex;
+align-items: center;
+gap: 6px;
+font-size: 13px;
+color: #9ca3af;
+}
+
+.theme-light .port-radio-group label {
+color: #4b5563;
+}
+
+.port-range-input {
+margin-top: 6px;
+border-radius: 10px;
+border: 1px solid #4b5563;
+background-color: #020617;
+color: #e5e7eb;
+padding: 8px 10px;
+font-size: 13px;
+}
+
+.port-note {
+font-size: 12px;
+margin-top: 4px;
+color: #9ca3af;
+}
+
+.theme-light .port-note {
+color: #6b7280;
+}
+
+.port-actions {
+margin-top: 4px;
+}
+
+.port-scan-btn {
+border: none;
+border-radius: 10px;
+padding: 9px 14px;
+background-color: #22c55e;
+color: #020617;
+font-weight: 600;
+font-size: 14px;
+cursor: pointer;
+}
+
+.port-scan-btn:disabled {
+opacity: 0.7;
+cursor: default;
+}
+
+/* Result */
+
+.port-result {
+margin-top: 12px;
+border-radius: 12px;
+border: 1px solid #1f2937;
+padding: 10px 12px 12px;
+background-color: #020617;
+}
+
+.theme-light .port-result {
+background-color: #f9fafb;
+border-color: #e5e7eb;
+}
+
+/* Progress */
+
+.port-progress-line {
+display: flex;
+align-items: center;
+gap: 8px;
+font-size: 12px;
+margin-bottom: 8px;
+}
+
+.port-progress-bar {
+flex: 1;
+height: 6px;
+border-radius: 999px;
+background-color: #0f172a;
+overflow: hidden;
+}
+
+.theme-light .port-progress-bar {
+background-color: #e5e7eb;
+}
+
+.port-progress-fill {
+height: 100%;
+width: 0;
+border-radius: 999px;
+background-color: #22c55e;
+transition: width 0.3s ease;
+}
+
+.port-progress-percent {
+width: 40px;
+text-align: right;
+}
+
+/* Summary */
+
+.port-summary {
+display: flex;
+justify-content: space-between;
+gap: 14px;
+margin-bottom: 10px;
+flex-wrap: wrap;
+}
+
+.port-summary-left {
+flex: 1.2;
+min-width: 220px;
+}
+
+.port-summary-title {
+font-size: 13px;
+color: #9ca3af;
+margin-bottom: 4px;
+}
+
+.theme-light .port-summary-title {
+color: #6b7280;
+}
+
+.port-summary-target {
+font-size: 13px;
+margin-bottom: 2px;
+}
+
+.port-summary-range {
+font-size: 12px;
+color: #9ca3af;
+}
+
+.theme-light .port-summary-range {
+color: #6b7280;
+}
+
+.port-summary-right {
+display: flex;
+flex-wrap: wrap;
+gap: 8px;
+min-width: 220px;
+justify-content: flex-end;
+}
+
+.port-count {
+min-width: 80px;
+padding: 6px 8px;
+border-radius: 10px;
+text-align: center;
+font-size: 12px;
+background-color: #020617;
+border: 1px solid #1f2937;
+}
+
+.theme-light .port-count {
+background-color: #ffffff;
+border-color: #e5e7eb;
+}
+
+.port-count-label {
+display: block;
+margin-bottom: 2px;
+}
+
+.port-count-value {
+font-weight: 700;
+}
+
+.port-count-open .port-count-value {
+color: #4ade80;
+}
+
+.port-count-closed .port-count-value {
+color: #9ca3af;
+}
+
+.port-count-filtered .port-count-value {
+color: #facc15;
+}
+
+.port-count-total .port-count-value {
+color: #60a5fa;
+}
+
+/* Table */
+
+.port-issues {
+margin-top: 6px;
+}
+
+.port-issues-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 6px;
+}
+
+.port-issues-header h3 {
+font-size: 14px;
+}
+
+.port-table {
+width: 100%;
+border-collapse: collapse;
+font-size: 12px;
+}
+
+.port-table thead tr {
+background-color: rgba(15, 23, 42, 0.9);
+}
+
+.theme-light .port-table thead tr {
+background-color: #e5e7eb;
+}
+
+.port-table th,
+.port-table td {
+padding: 6px 8px;
+border-bottom: 1px solid #1f2937;
+text-align: left;
+}
+
+.theme-light .port-table th,
+.theme-light .port-table td {
+border-bottom-color: #e5e7eb;
+}
+
+.port-table th {
+color: #9ca3af;
+}
+
+.theme-light .port-table th {
+color: #4b5563;
+}
+
+.port-table tr:nth-child(even) {
+background-color: rgba(15, 23, 42, 0.5);
+}
+
+.theme-light .port-table tr:nth-child(even) {
+background-color: #f3f4f6;
+}
+
+/* status & risk */
+
+.port-status {
+font-weight: 600;
+text-transform: capitalize;
+}
+
+.port-open {
+color: #4ade80;
+}
+
+.port-closed {
+color: #9ca3af;
+}
+
+.port-filtered {
+color: #facc15;
+}
+
+.port-risk {
+font-size: 11px;
+}
+
+.port-risk-high {
+color: #fb7185;
+}
+
+.port-risk-medium {
+color: #fb923c;
+}
+
+.port-risk-low {
+color: #4ade80;
+}
+
+/* PDF button */
+
+.port-download-btn {
+border: none;
+border-radius: 8px;
+padding: 8px 14px;
+background-color: #3b82f6;
+color: #eef2ff;
+font-size: 13px;
+font-weight: 600;
+cursor: pointer;
+transition:
+background-color 0.2s ease,
+transform 0.15s ease,
+box-shadow 0.15s ease;
+}
+
+.port-download-btn:hover {
+background-color: #2563eb;
+transform: translateY(-1px) scale(1.02);
+box-shadow: 0 10px 24px rgba(37, 99, 235, 0.4);
+}

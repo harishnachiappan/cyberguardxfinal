@@ -1,0 +1,44 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+
+body {
+font-family: "Ubuntu", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+background-color: #020617;
+color: #e5e7eb;
+}
+
+.theme-dark {
+background-color: #020617;
+color: #e5e7eb;
+}
+
+.theme-light {
+background-color: #f3f4f6;
+color: #020617;
+}
+
+@keyframes popup {
+  0% {
+    transform: translateX(2rem) scale(0.96);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+.animate-spin-slow {
+  animation: spin-slow 16s linear infinite;
+}

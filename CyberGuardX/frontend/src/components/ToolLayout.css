@@ -1,0 +1,46 @@
+.tool-root {
+margin-top: 12px;
+}
+
+.tool-header {
+margin-bottom: 10px;
+}
+
+.tool-title {
+font-size: 18px;
+font-weight: 600;
+}
+
+.theme-dark .tool-title {
+color: #e5e7eb;
+}
+
+.theme-light .tool-title {
+color: #111827;
+}
+
+.tool-desc {
+font-size: 13px;
+}
+
+.theme-dark .tool-desc {
+color: #9ca3af;
+}
+
+.theme-light .tool-desc {
+color: #4b5563;
+}
+
+.tool-body {
+border-radius: 12px;
+border: 1px solid #1f2937;
+padding: 14px 16px 16px;
+background-color: #020617;
+box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.theme-light .tool-body {
+background-color: #ffffff;
+border-color: #e5e7eb;
+box-shadow: 0 4px 14px rgba(15, 23, 42, 0.15);
+}
